@@ -1,0 +1,35 @@
+{
+  "description": "Altering HTTP responses",
+  "manifest_version": 2,
+  "name": "http-response-filter",
+  "version": "1.0",
+  "homepage_url":
+    "https://github.com/mdn/webextensions-examples/tree/master/http-response",
+  "icons": {
+    "48": "pen.svg"
+  },
+
+  "permissions": [
+    "webRequest",
+    "webRequestBlocking",
+    "downloads",
+    "https://www.google.com/*",
+    "https://localhost:8080/*",
+    "https://fiddle.jshell.net/*",
+    "https://*.openstreetmap.org/*",
+    "https://www.bing.com/*"
+  ],
+
+  "content_security_policy":
+    "script-src 'self' https://example.com https://fiddle.jshell.net https://www.bing.com; object-src 'self' https://fiddle.jshell.net https://www.bing.com",
+
+  "background": {
+    "scripts": ["background.js"]
+  },
+
+  "applications": {
+    "gecko": {
+      "strict_min_version": "57.0a1"
+    }
+  }
+}
