@@ -8,8 +8,10 @@ from util import util
 from PIL import Image
 import ntpath
 
+
 dataset = None
 model = None
+
 
 def getOldStyleImage(data):
     model.set_input(data)
@@ -50,7 +52,9 @@ def setup(opt):
     opt.no_flip = True    # no flip
     opt.display_id = -1   # no visdom display
     data_loader = CreateDataLoader(opt)
+    global dataset
     dataset = data_loader.load_data()
+    global model
     model = create_model(opt)
     model.setup(opt)
 
