@@ -34,6 +34,10 @@ class BaseModel():
     def forward(self):
         pass
 
+    def forwardFakeB(self):
+        with torch.no_grad():
+            pass
+
     # load and print networks; create schedulers
     def setup(self, opt, parser=None):
         if self.isTrain:
