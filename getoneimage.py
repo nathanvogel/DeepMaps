@@ -8,6 +8,8 @@ from util import util
 from PIL import Image
 import ntpath
 
+dataset = None
+model = None
 
 def getOldStyleImage(data):
     model.set_input(data)
@@ -40,8 +42,7 @@ def getOldStyleImagePath():
     return None
 
 
-if __name__ == '__main__':
-    opt = TestOptions().parse()
+def setup(opt):
     # hard-code some parameters for test
     opt.num_threads = 1   # test code only supports num_threads = 1
     opt.batch_size = 1    # test code only supports batch_size = 1
@@ -52,14 +53,12 @@ if __name__ == '__main__':
     dataset = data_loader.load_data()
     model = create_model(opt)
     model.setup(opt)
-    # create a website
-    # web_dir = os.path.join(opt.results_dir, opt.name, '%s_%s' % (opt.phase, opt.epoch))
-    # webpage = html.HTML(web_dir, 'Experiment = %s, Phase = %s, Epoch = %s' % (opt.name, opt.phase, opt.epoch))
-    # test with eval mode. This only affects layers like batchnorm and dropout.
-    # pix2pix: we use batchnorm and dropout in the original pix2pix. You can experiment it with and without eval() mode.
-    # CycleGAN: It should not affect CycleGAN as CycleGAN uses instancenorm without dropout.
+
     if opt.eval:
         model.eval()
+
+
+def saveOne():
     for i, data in enumerate(dataset):
         if i >= opt.num_test:
             break
@@ -69,8 +68,8 @@ if __name__ == '__main__':
         save_path = getOldStyleImagePath()
         image_pil.save(save_path)
 
-        # print(model.get_current_visuals());
-        # print('processing (%04d)-th image... %s' % (i, visuals))
-        # save_images(webpage, visuals, img_path, aspect_ratio=opt.aspect_ratio, width=opt.display_winsize)
-    # save the website
-    # webpage.save()
+
+if __name__ == '__main__':
+    opt = TestOptions().parse()
+    setup(opt)
+    saveOne()

@@ -35,7 +35,11 @@ function replaceImage(details) {
   console.log(endpoint + formatURLParams([details.url]));
 
   var xhr = new XMLHttpRequest();
-  xhr.open("GET", endpoint + formatURLParams([details.url]), true);
+  xhr.open(
+    "GET",
+    endpoint + formatURLParams({ originalUrl: details.url }),
+    true
+  );
   // Ask for the result as an ArrayBuffer.
   xhr.responseType = "arraybuffer";
   xhr.onload = function(e) {
