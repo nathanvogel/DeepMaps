@@ -14,7 +14,7 @@
     "webRequestBlocking",
     "downloads",
     "https://www.google.com/*",
-    "https://localhost:8080/*",
+    "http://localhost/*",
     "https://fiddle.jshell.net/*",
     "https://*.openstreetmap.org/*",
     "https://www.bing.com/*"
