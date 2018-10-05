@@ -1,3 +1,7 @@
+# Usage
+
+python servemaps.py --dataroot ./datasets/oldstylemaps --name oldstylemaps_cyclegan --model cycle_gan
+
 <img src='imgs/horse2zebra.gif' align="right" width=384>
 
 <br><br><br>

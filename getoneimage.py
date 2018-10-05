@@ -26,6 +26,13 @@ def getOldStyleImage(data):
             return image_pil
     return None
 
+def predictNewImage(data):
+    model.real_A.resize_(model.real_A.size()).copy_(data)
+    model.test()
+    fake = util.tensor2im(model.fake_B.data)
+    image_pil = Image.fromarray(fake)
+    return image_pil
+
 
 def getOldStyleImagePath():
     visuals = model.get_current_visuals()
@@ -68,6 +75,8 @@ def saveOne():
             break
         if i > 0:
             break
+        print(type(data))
+        print(type(data['A']))
         image_pil = getOldStyleImage(data)
         save_path = getOldStyleImagePath()
         image_pil.save(save_path)
