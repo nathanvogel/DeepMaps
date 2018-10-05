@@ -59,18 +59,6 @@ class S(BaseHTTPRequestHandler):
         A_img = img.convert('RGB')
         A_img = mytransform(A_img)
         A_img = A_img.unsqueeze(0)
-        # print(A_img)
-        # if self.opt.direction == 'BtoA':
-        #     input_nc = self.opt.output_nc
-        # else:
-        #     input_nc = self.opt.input_nc
-
-        # if input_nc == 1:  # RGB to gray
-        #     tmp = A[0, ...] * 0.299 + A[1, ...] * 0.587 + A[2, ...] * 0.114
-        #     A = tmp.unsqueeze(0)
-
-        # image_pil = getoneimage.predictNewImage(A_img)
-        print("===============awef================")
 
         data = {
             'A': A_img,
@@ -78,56 +66,21 @@ class S(BaseHTTPRequestHandler):
             'A_paths': "./tmpA.png",
             'B_paths': "./tmpB.png"
         }
-        print(data)
-
-        print("==============gre=================")
         image_pil = getoneimage.getOldStyleImage(data)
-        # # print(image_pil)
-        # save_path = getoneimage.getOldStyleImagePath()
-        # print("SAVING to " + save_path)
-        # image_pil.save("./oldstyleimage.png")
 
 
-        # byte_io = BytesIO()
-        # image_pil.save(byte_io, format='PNG')
+        byte_io = BytesIO()
+        image_pil.save(byte_io, format='PNG')
 
-
-        # self._set_headers()
-        # bytesValue = byte_io.getvalue()
-        # # assume bytes_io is a `BytesIO` object
-        # byte_str = bytes_io.read()
-        #
-        # # Convert to a "unicode" object
-        # text_obj = byte_str.decode('UTF-8')  # Or use the encoding you expect
-
-        content_path = "./tempforsend.png"
-        image_pil.save(content_path, format='PNG')
-        content = open(content_path, 'rb')
+        content = self.gzipencode(byte_io.getvalue())
         self.send_response(200)
-        self.send_header('Content-type', 'image/png')
+        self.send_header('content-type', 'image/png')
+        # self.send_header('content-length', len(bytesValue))
+        self.send_header("Content-length", str(len(str(content))))
+        self.send_header("Content-Encoding", "gzip")
         self.end_headers()
-        self.wfile.write(content.read())
-        content.close()
-
-        # self.send_response(200)
-        # self.send_header('content-type', 'image/png')
-        # # self.send_header('content-length', len(bytesValue))
-        # self.send_header("Content-length", str(len(str(content))))
-        # self.send_header("Content-Encoding", "gzip")
-        # self.end_headers()
-        # self.wfile.write(content)
-        # self.wfile.flush()
-
-
-        # content = self.gzipencode(byte_io.getvalue())
-        # self.send_response(200)
-        # self.send_header('content-type', 'image/png')
-        # # self.send_header('content-length', len(bytesValue))
-        # self.send_header("Content-length", str(len(str(content))))
-        # self.send_header("Content-Encoding", "gzip")
-        # self.end_headers()
-        # self.wfile.write(content)
-        # self.wfile.flush()
+        self.wfile.write(content)
+        self.wfile.flush()
 
     def do_HEAD(self):
         self._set_headers()
