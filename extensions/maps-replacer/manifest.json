@@ -17,7 +17,8 @@
     "http://localhost/*",
     "https://fiddle.jshell.net/*",
     "https://*.openstreetmap.org/*",
-    "https://www.bing.com/*"
+    "https://www.bing.com/*",
+    "http://www.blended.study/*"
   ],
 
   "content_security_policy":

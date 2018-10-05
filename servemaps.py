@@ -31,8 +31,16 @@ mytransform = None
 class S(BaseHTTPRequestHandler):
     def _set_headers(self):
         self.send_response(200)
-        self.send_header('Content-type', 'img/png')
+        self.send_header('content-type', 'image/png')
         self.end_headers()
+
+    def gzipencode(self, content):
+        import gzip
+        out = BytesIO()
+        f = gzip.GzipFile(fileobj=out, mode='w', compresslevel=5)
+        f.write(content)
+        f.close()
+        return out.getvalue()
 
     def do_GET(self):
 
@@ -78,11 +86,48 @@ class S(BaseHTTPRequestHandler):
         # save_path = getoneimage.getOldStyleImagePath()
         # print("SAVING to " + save_path)
         # image_pil.save("./oldstyleimage.png")
-        byte_io = BytesIO()
-        image_pil.save(byte_io, 'PNG')
-        # print(img_arr)
-        self._set_headers()
-        self.wfile.write(byte_io.getbuffer())
+
+
+        # byte_io = BytesIO()
+        # image_pil.save(byte_io, format='PNG')
+
+
+        # self._set_headers()
+        # bytesValue = byte_io.getvalue()
+        # # assume bytes_io is a `BytesIO` object
+        # byte_str = bytes_io.read()
+        #
+        # # Convert to a "unicode" object
+        # text_obj = byte_str.decode('UTF-8')  # Or use the encoding you expect
+
+        content_path = "./tempforsend.png"
+        image_pil.save(content_path, format='PNG')
+        content = open(content_path, 'rb')
+        self.send_response(200)
+        self.send_header('Content-type', 'image/png')
+        self.end_headers()
+        self.wfile.write(content.read())
+        content.close()
+
+        # self.send_response(200)
+        # self.send_header('content-type', 'image/png')
+        # # self.send_header('content-length', len(bytesValue))
+        # self.send_header("Content-length", str(len(str(content))))
+        # self.send_header("Content-Encoding", "gzip")
+        # self.end_headers()
+        # self.wfile.write(content)
+        # self.wfile.flush()
+
+
+        # content = self.gzipencode(byte_io.getvalue())
+        # self.send_response(200)
+        # self.send_header('content-type', 'image/png')
+        # # self.send_header('content-length', len(bytesValue))
+        # self.send_header("Content-length", str(len(str(content))))
+        # self.send_header("Content-Encoding", "gzip")
+        # self.end_headers()
+        # self.wfile.write(content)
+        # self.wfile.flush()
 
     def do_HEAD(self):
         self._set_headers()
