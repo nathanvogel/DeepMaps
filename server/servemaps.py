@@ -4,9 +4,8 @@
 from options.test_options import TestOptions
 import getoneimage
 import requests
-from scipy import misc
-from io import BytesIO, StringIO
-from data.base_dataset import BaseDataset, get_transform
+from io import BytesIO
+from data.base_dataset import get_transform
 from PIL import Image
 
 # Server imports
