@@ -1,11 +1,15 @@
-# HTTP Response parser
+# Request-Scraper
 
 ## What it does
 
-Listens to HTTP Responses from example.com and changes the body of the response as it comes through. So that the word "Example" on https://example.com becomes "WebExtension Example".
+Automatically download tile images as you browse OpenStreetMaps webpages.
+It can easily be adapted to other websites.
 
-## What it shows
 
-How to use the response parser on bytes.
+## Compatibility
 
-Icon is from: https://www.iconfinder.com/icons/763339/draw_edit_editor_pen_pencil_tool_write_icon#size=128
+Current URL scheme target OpenStreetMaps.org requests only.
+
+## How to install
+
+https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Alternative_distribution_options/Sideloading_add-ons#Using_Install_Add-on_From_File
