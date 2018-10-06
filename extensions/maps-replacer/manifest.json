@@ -1,12 +1,12 @@
 {
-  "description": "Altering HTTP responses",
+  "description": "Replace downloaded map tiles inside OpenStreetMaps, with the one queried at a local server.",
   "manifest_version": 2,
-  "name": "http-response-filter",
+  "name": "maps-replacer",
   "version": "1.0",
   "homepage_url":
-    "https://github.com/mdn/webextensions-examples/tree/master/http-response",
+    "https://github.com/nathanvogel/DeepMaps",
   "icons": {
-    "48": "pen.svg"
+    "48": "maps.svg"
   },
 
   "permissions": [
