@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-import getoneimage
+import modelwrapper
 from options.test_options import TestOptions
 import requests
 import gzip
@@ -36,7 +36,7 @@ class S(BaseHTTPRequestHandler):
         # img.save("./downloaded.png")
 
         # Feed it to our neural network to get an ML-generated version.
-        img_fake = getoneimage.getFakeImage(img)
+        img_fake = modelwrapper.getFakeImage(img)
 
         # Create a stream in RAM to write the generated image as a PNG.
         byte_io = BytesIO()
@@ -58,7 +58,7 @@ class S(BaseHTTPRequestHandler):
         self._set_headers()
 
 
-def run(server_class=HTTPServer, handler_class=S, port=8080):
+def runServer(server_class=HTTPServer, handler_class=S, port=8080):
     server_address = ('', port)
     httpd = server_class(server_address, handler_class)
     print("Starting httpd server...")
@@ -66,6 +66,12 @@ def run(server_class=HTTPServer, handler_class=S, port=8080):
 
 
 if __name__ == '__main__':
+    # Use CycleGAN's option parser to let users configure the server as if
+    # it was just a CycleGAN/pix2pix model.
     opt = TestOptions().parse()
-    getoneimage.setup(opt)
-    run()
+    # Hard-code CycleGAN usage.
+    opt.model = "cycle_gan"
+    # Load the model.
+    modelwrapper.setup(opt)
+    # Start the server.
+    runServer()

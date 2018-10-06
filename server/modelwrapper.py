@@ -63,7 +63,7 @@ def setup(opt):
     global mytransform
     mytransform = get_transform(opt)
 
-    # Setup the CycleGAN model.
+    # Setup the CycleGAN model (without loading any dataset)
     global model
     model = create_model(opt)
     model.setup(opt)
