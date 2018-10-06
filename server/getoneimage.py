@@ -1,14 +1,32 @@
-import os
-from options.test_options import TestOptions
-from data import CreateDataLoader
+from data.base_dataset import get_transform
 from models import create_model
 from util import util
 from PIL import Image
-import ntpath
 
 
 dataset = None
 model = None
+mytransform = None
+
+
+def getFakeImage(img):
+    # Prepare file for Torch
+    A_img = img.convert('RGB')
+    A_img = mytransform(A_img)
+    A_img = A_img.unsqueeze(0)
+
+    # Format it like a dataset object, the only data that matters here is
+    # 'A'.
+    data = {
+        'A': A_img,
+        'B': A_img,
+        'A_paths': "./tmpA.png",
+        'B_paths': "./tmpB.png"
+    }
+
+    # Ask CycleGAN to generate the new image.
+    image_pil = getOldStyleImage(data)
+    return image_pil
 
 
 def getOldStyleImage(data):
@@ -24,29 +42,13 @@ def getOldStyleImage(data):
             return image_pil
     return None
 
+
 def predictNewImage(data):
     model.real_A.resize_(model.real_A.size()).copy_(data)
     model.test()
     fake = util.tensor2im(model.fake_B.data)
     image_pil = Image.fromarray(fake)
     return image_pil
-
-
-def getOldStyleImagePath():
-    visuals = model.get_current_visuals()
-    # Get image name
-    img_path = model.get_image_paths()
-    short_path = ntpath.basename(img_path[0])
-    name = os.path.splitext(short_path)[0]
-
-    for label, im_data in visuals.items():
-        if label == 'fake_B':
-            # Save path
-            image_name = '%s_%s.png' % (name, label)
-            save_path = os.path.join(".", image_name)
-            print('saving image... %s' % (save_path))
-            return save_path
-    return None
 
 
 def setup(opt):
@@ -56,31 +58,15 @@ def setup(opt):
     opt.serial_batches = True  # no shuffle
     opt.no_flip = True    # no flip
     opt.display_id = -1   # no visdom display
-    data_loader = CreateDataLoader(opt)
-    global dataset
-    dataset = data_loader.load_data()
+
+    # Setup the transform to send images into the neural network.
+    global mytransform
+    mytransform = get_transform(opt)
+
+    # Setup the CycleGAN model.
     global model
     model = create_model(opt)
     model.setup(opt)
 
     if opt.eval:
         model.eval()
-
-
-def saveOne():
-    for i, data in enumerate(dataset):
-        if i >= opt.num_test:
-            break
-        if i > 0:
-            break
-        print(type(data))
-        print(type(data['A']))
-        image_pil = getOldStyleImage(data)
-        save_path = getOldStyleImagePath()
-        image_pil.save(save_path)
-
-
-if __name__ == '__main__':
-    opt = TestOptions().parse()
-    setup(opt)
-    saveOne()
