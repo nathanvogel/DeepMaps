@@ -24,14 +24,18 @@ class S(BaseHTTPRequestHandler):
         return out.getvalue()
 
     def do_GET(self):
+        # Parse the given URL
         o = urlparse.urlparse(self.path)
         params = urlparse.parse_qs(o.query)
         originalUrl = params["originalUrl"][0]
+
+        # Download the given image.
         print("Downloadling " + originalUrl)
         res = requests.get(originalUrl)
         img = Image.open(BytesIO(res.content))
         # img.save("./downloaded.png")
 
+        # Feed it to our neural network to get an ML-generated version.
         img_fake = getoneimage.getFakeImage(img)
 
         # Create a stream in RAM to write the generated image as a PNG.
@@ -43,8 +47,8 @@ class S(BaseHTTPRequestHandler):
 
         # Send the image to the client.
         self.send_response(200)
-        self.send_header('content-type', 'image/png')
-        self.send_header("Content-length", str(len(str(content))))
+        self.send_header('Content-Type', 'image/png')
+        self.send_header("Content-Length", str(len(str(content))))
         self.send_header("Content-Encoding", "gzip")
         self.end_headers()
         self.wfile.write(content)
