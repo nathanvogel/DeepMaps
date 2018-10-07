@@ -25,11 +25,11 @@ def getFakeImage(img):
     }
 
     # Ask CycleGAN to generate the new image.
-    image_pil = getOldStyleImage(data)
+    image_pil = predictImage(data)
     return image_pil
 
 
-def getOldStyleImage(data):
+def predictImage(data):
     model.set_input(data)
     model.test()
     visuals = model.get_current_visuals()
@@ -41,14 +41,6 @@ def getOldStyleImage(data):
             image_pil = Image.fromarray(im)
             return image_pil
     return None
-
-
-def predictNewImage(data):
-    model.real_A.resize_(model.real_A.size()).copy_(data)
-    model.test()
-    fake = util.tensor2im(model.fake_B.data)
-    image_pil = Image.fromarray(fake)
-    return image_pil
 
 
 def setup(opt):

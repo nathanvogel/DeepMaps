@@ -69,8 +69,14 @@ if __name__ == '__main__':
     # Use CycleGAN's option parser to let users configure the server as if
     # it was just a CycleGAN/pix2pix model.
     opt = TestOptions().parse()
-    # Hard-code CycleGAN usage.
-    opt.model = "cycle_gan"
+    # Hard-code test usage, so that the model doesn't spend time generating
+    # extra unneeded visuals.
+    opt.model = "test"
+    # Options from test_single.sh:
+    # opt.direction = "AtoB"
+    # opt.dataset_mode = "single"
+    # opt.netG = "unet_256"
+    # opt.norm = "batch"
     # Load the model.
     modelwrapper.setup(opt)
     # Start the server.
