@@ -20,8 +20,6 @@ This is an interactive experience that allows you to browse OpenStreetMap render
 
 Here : [https://twitter.com/genekogan/status/1048239707124125699](https://twitter.com/genekogan/status/1048239707124125699)
 
-Note: In the current state, the neural network and server aren't very fast, so each tile can take a few seconds to load depending on your computer.
-
 ## How to
 
 ### Install
