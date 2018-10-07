@@ -1,5 +1,5 @@
 {
-  "description": "Automatically download images as you browse OpenStreetMaps webpages",
+  "description": "Automatically download images as you browse OpenStreetMap webpages",
   "manifest_version": 2,
   "name": "request-scraper",
   "version": "1.0",

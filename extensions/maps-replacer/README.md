@@ -2,12 +2,12 @@
 
 ## What it does
 
-Replace downloaded map tiles inside OpenStreetMaps, with the one queried at a local server.
+Replace downloaded map tiles inside OpenStreetMap, with the one queried at a local server.
 
 ## Compatibility
 
 Firefox-only
-OpenStreetMaps.org
+openstreetmap.org
 
 ## How to install
 

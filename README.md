@@ -7,14 +7,14 @@ Browse online maps as if they were hand drawn in the 16th century!
 
 ![DeepMaps screenshot](server/imgs/deepmaps.png)
 
-Or train a machine learning CycleGAN model on your own dataset and restyle OpenStreetMaps to anything!
+Or train a machine learning CycleGAN model on your own dataset and restyle OpenStreetMap to anything!
 
 ### What is this?
 
-This is an interactive experience that allows you to browse OpenStreetMaps rendered in an alternative style, on-demand by a neural network. The project is composed of 3 main parts:
+This is an interactive experience that allows you to browse OpenStreetMap rendered in an alternative style, on-demand by a neural network. The project is composed of 3 main parts:
  - A PyTorch CycleGAN machine learning model
  - A local server that wraps around this model to convert given images and send the generated images back...
- - ...to a Firefox extension that injects the generated tiles in [openstreetmaps.org](openstreetmaps.org).
+ - ...to a Firefox extension that injects the generated tiles in [openstreetmap.org](openstreetmap.org).
 
 ## How to
 
@@ -51,7 +51,7 @@ python servemaps.py --dataroot ./datasets/oldstylemaps --name oldstylemaps_cycle
 The options available are the same as the one [described](server/README.md) for the original CycleGAN code for `test.py`. You can see them all in `server/options/`.
 The images will be served from `http://localhost:8080`.
 
-Enable the extension in Firefox and open [openstreetmaps.org](openstreetmaps.org)!
+Enable the extension in Firefox and open [openstreetmap.org](openstreetmap.org)!
 
 
 ## FAQ

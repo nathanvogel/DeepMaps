@@ -1,5 +1,5 @@
 {
-  "description": "Replace downloaded map tiles inside OpenStreetMaps, with the one queried at a local server.",
+  "description": "Replace downloaded map tiles inside OpenStreetMap, with the one queried at a local server.",
   "manifest_version": 2,
   "name": "maps-replacer",
   "version": "1.0",

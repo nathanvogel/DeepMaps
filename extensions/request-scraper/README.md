@@ -2,13 +2,13 @@
 
 ## What it does
 
-Automatically download tile images as you browse OpenStreetMaps webpages.
+Automatically download tile images as you browse OpenStreetMap webpages.
 It can easily be adapted to other websites.
 
 
 ## Compatibility
 
-Current URL scheme target OpenStreetMaps.org requests only.
+Current URL scheme target openstreetmap.org requests only.
 
 ## How to install
 
