@@ -74,46 +74,69 @@ function replaceImage(details) {
   return {};
 }
 
+function setup() {
+  noCanvas();
+}
+
+function draw() {}
+
 function doStyleTransfer(details) {
   console.log("DO STYLE TRANSFER");
   let filter = browser.webRequest.filterResponseData(details.requestId);
+  let buffers = [];
 
   filter.ondata = event => {
+    console.log("on data ");
+    buffers.push(event.data);
+  };
+
+  filter.onstop = event => {
     // event.data is an ArrayBuffer.
-    console.log(event.data);
-    console.log(event);
-    var arrayBuffer = event.data;
-    var blob = blobUtil.arrayBufferToBlob(arrayBuffer, "image/png");
+    // console.log(event.data);
+    // console.log(event);
+    console.log("on stop");
+    // var arrayBuffer = event.data;
+    // var blob = blobUtil.arrayBufferToBlob(arrayBuffer, "image/png");
+    var blob = new Blob(buffers, { type: "image/png" });
+    console.log(blob);
     blobUtil.blobToDataURL(blob).then(function(dataURL) {
-      var image = new Image(256, 256);
-      image.src = dataURL;
-      console.log("on data ");
       console.log(dataURL);
+      // var image = new Image(256, 256);
+      // image.src = dataURL;
+
+      // Using p5 because the HTML Node argument seems to be buggy...
+      var image = createImg(dataURL, function() {
+        transferImage(image, function(styledImage) {
+          console.log("Received generated image after the original image.");
+          console.log(styledImage);
+          // var buffer = Uint8Array.from(atob(styledImage.src), c => c.charCodeAt(0));
+
+          var styledBlob = blobUtil.dataURLToBlob(styledImage);
+          console.log(styledBlob);
+          blobUtil
+            .blobToArrayBuffer(styledBlob)
+            .then(function(arrayBuff) {
+              // success
+              console.log("Converted to arrayBuff");
+              console.log(arrayBuff);
+              filter.write(arrayBuff);
+              filter.disconnect();
+            })
+            .catch(function(err) {
+              // error
+              filter.disconnect();
+              console.error(err);
+            });
+        });
+      });
+      // image.size(256, 256);
+      // image.attribute("width", 256);
+      // image.attribute("height", 256);
+      console.log(image);
 
       // var bytes = new Uint8Array(arrayBuffer);
       // var image = new Image(256, 256);
       // image.src = "data:image/png;base64," + encode(bytes);
-
-      transferImage(image, function(styledImage) {
-        console.log("Received generated image after the original image.");
-        console.log(styledImage);
-        // var buffer = Uint8Array.from(atob(styledImage.src), c => c.charCodeAt(0));
-        blobUtil
-          .imgSrcToBlob(styledImage)
-          .then(blobUtil.blobToArrayBuffer)
-          .then(function(arrayBuff) {
-            // success
-            console.log("Converted to arrayBuff");
-            console.log(arrayBuff);
-            filter.write(arrayBuff);
-            filter.disconnect();
-          })
-          .catch(function(err) {
-            // error
-            filter.disconnect();
-            console.error(err);
-          });
-      });
     });
   };
 
