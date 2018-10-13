@@ -81,44 +81,39 @@ function setup() {
 function draw() {}
 
 function doStyleTransfer(details) {
-  console.log("DO STYLE TRANSFER");
   let filter = browser.webRequest.filterResponseData(details.requestId);
   let buffers = [];
 
+  // Gather all the buffers coming in. The image might arrive in several pieces.
   filter.ondata = event => {
-    console.log("on data ");
     buffers.push(event.data);
   };
 
+  // When all the pieces are here.
   filter.onstop = event => {
-    // event.data is an ArrayBuffer.
-    // console.log(event.data);
-    // console.log(event);
-    console.log("on stop");
-    // var arrayBuffer = event.data;
-    // var blob = blobUtil.arrayBufferToBlob(arrayBuffer, "image/png");
+    console.log("Received a new tile.");
+    // Concat them with the Blob API.
     var blob = new Blob(buffers, { type: "image/png" });
-    console.log(blob);
+    // Convert the buffers to an Image
     blobUtil.blobToDataURL(blob).then(function(dataURL) {
-      console.log(dataURL);
-      // var image = new Image(256, 256);
-      // image.src = dataURL;
-
       // Using p5 because the HTML Node argument seems to be buggy...
+      // We also need to wait for the image to be successfully loaded.
       var image = createImg(dataURL, function() {
+        // Apply style-transfer to the image.
         transferImage(image, function(styledImage) {
-          console.log("Received generated image after the original image.");
-          console.log(styledImage);
-          // var buffer = Uint8Array.from(atob(styledImage.src), c => c.charCodeAt(0));
+          if (!styledImage) {
+            console.log("Didn't receive a styled image. aborting");
+            filter.disconnect();
+            return;
+          }
+          console.log("Image restyled.");
 
-          var styledBlob = blobUtil.dataURLToBlob(styledImage);
-          console.log(styledBlob);
+          // Convert the result back to an ArrayBuffer.
+          var styledBlob = blobUtil.dataURLToBlob(styledImage.src);
           blobUtil
             .blobToArrayBuffer(styledBlob)
             .then(function(arrayBuff) {
               // success
-              console.log("Converted to arrayBuff");
-              console.log(arrayBuff);
               filter.write(arrayBuff);
               filter.disconnect();
             })
@@ -129,14 +124,6 @@ function doStyleTransfer(details) {
             });
         });
       });
-      // image.size(256, 256);
-      // image.attribute("width", 256);
-      // image.attribute("height", 256);
-      console.log(image);
-
-      // var bytes = new Uint8Array(arrayBuffer);
-      // var image = new Image(256, 256);
-      // image.src = "data:image/png;base64," + encode(bytes);
     });
   };
 
