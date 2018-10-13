@@ -1,10 +1,10 @@
 {
-  "description": "Replace downloaded map tiles inside OpenStreetMap, with the one queried at a local server.",
+  "description":
+    "Replace downloaded map tiles inside OpenStreetMap, with the one queried at a local server.",
   "manifest_version": 2,
   "name": "maps-replacer",
   "version": "1.0",
-  "homepage_url":
-    "https://github.com/nathanvogel/DeepMaps",
+  "homepage_url": "https://github.com/nathanvogel/DeepMaps",
   "icons": {
     "48": "maps.svg"
   },
@@ -15,17 +15,26 @@
     "downloads",
     "https://www.google.com/*",
     "http://localhost/*",
+    "https://localhost/*",
     "https://fiddle.jshell.net/*",
     "https://*.openstreetmap.org/*",
     "https://www.bing.com/*",
-    "http://www.blended.study/*"
+    "http://www.blended.study/*",
+    "https://storage.googleapis.com/*",
+    "https://raw.githubusercontent.com/*",
+    "https://mths.be/*"
   ],
 
   "content_security_policy":
-    "script-src 'self' https://example.com https://fiddle.jshell.net https://www.bing.com; object-src 'self' https://fiddle.jshell.net https://www.bing.com",
+    "default-src 'self'; img-src 'self' data:; script-src 'self' 'unsafe-eval' https://example.com https://fiddle.jshell.net https://www.bing.com; object-src 'self' https://fiddle.jshell.net https://www.bing.com",
 
   "background": {
-    "scripts": ["background.js"]
+    "scripts": [
+      "libs/ml5.min.js",
+      "libs/blob-util.min.js",
+      "styleTransfer.js",
+      "background.js"
+    ]
   },
 
   "applications": {
