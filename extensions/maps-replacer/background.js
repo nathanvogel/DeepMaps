@@ -1,3 +1,5 @@
+"use strict";
+
 // eslint-disable-next-line no-unused-vars
 function listener(details) {
   let filter = browser.webRequest.filterResponseData(details.requestId);
@@ -74,10 +76,12 @@ function replaceImage(details) {
   return {};
 }
 
+// p5.js setup()
 function setup() {
   noCanvas();
 }
 
+// p5.js draw()
 function draw() {}
 
 function doStyleTransfer(details) {
@@ -92,7 +96,7 @@ function doStyleTransfer(details) {
   // When all the pieces are here.
   filter.onstop = event => {
     console.log("Received a new tile.");
-    // Concat them with the Blob API.
+    // Concat them using the Blob API.
     var blob = new Blob(buffers, { type: "image/png" });
     // Convert the buffers to an Image
     blobUtil.blobToDataURL(blob).then(function(dataURL) {
@@ -107,19 +111,27 @@ function doStyleTransfer(details) {
             return;
           }
           console.log("Image restyled.");
+          image.remove();
+          image = null;
 
           // Convert the result back to an ArrayBuffer.
           var styledBlob = blobUtil.dataURLToBlob(styledImage.src);
+          styledImage = null;
           blobUtil
             .blobToArrayBuffer(styledBlob)
             .then(function(arrayBuff) {
               // success
               filter.write(arrayBuff);
               filter.disconnect();
+              filter.ondata = null;
+              filter.onstop = null;
+              filter = null;
+              buffers = null;
             })
             .catch(function(err) {
               // error
               filter.disconnect();
+              console.error("Error while converting and writing the buffer:");
               console.error(err);
             });
         });

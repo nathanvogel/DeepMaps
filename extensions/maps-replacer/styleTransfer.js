@@ -1,3 +1,5 @@
+"use strict";
+
 var styler;
 
 styler = ml5.styleTransfer("models/oldmap", modelLoaded);
@@ -24,5 +26,6 @@ function transferImage(inputImg, onImageStyled) {
     // console.log("Style transfer finished. Result = ");
     // console.log(result);
     onImageStyled(result);
+    result = null;
   });
 }
