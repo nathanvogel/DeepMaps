@@ -1,6 +1,6 @@
 var styler;
 
-styler = ml5.styleTransfer("models/udnie", modelLoaded);
+styler = ml5.styleTransfer("models/oldmap", modelLoaded);
 
 // A function to be called when the models have loaded
 function modelLoaded() {
