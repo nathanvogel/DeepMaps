@@ -1,10 +1,10 @@
-![DeepMaps browser preview](server/imgs/DeepMaps-Preview_303px.gif)
+![DeepMaps browser preview](screenshots/DeepMaps-Preview_303px.gif)
 
 ## DeepMaps
 
 Browse online maps as if they were hand-drawn in the 16th century!
 
-![DeepMaps screenshot](server/imgs/deepmaps.png)
+![DeepMaps screenshot](screenshots/cyclegan-deepmaps.png)
 
 Or train a machine learning CycleGAN model on your own dataset and restyle OpenStreetMap to anything!
 
