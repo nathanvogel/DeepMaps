@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="utf-8">
+  <title>DeepMaps options</title>
+  <link rel="stylesheet" type="text/css" href="styles/styles.css">
+
+</head>
+<body>
+
+Selected style:
+<select id="style">
+  <option value="oldmap01">Ancient map</option>
+  <option value="udnie">Francis Picabia - Udnie</option>
+  <option value="localhost">Local server</option>
+</select>
+
+<div id="localhost-info">
+  You'll need to run your own local server on http://localhost:8080/tmp.png. <br/>
+  
+  Check <a href="https://github.com/nathanvogel/DeepMaps">the GitHub repository</a>
+  for a CycleGAN-powered Python server example.
+</div>
+<br/>
+
+<button id="save">Save</button>
+
+<script src="options.js"></script>
+</body>
+</html>

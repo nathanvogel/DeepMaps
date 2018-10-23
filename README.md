@@ -2,7 +2,7 @@
 
 ## DeepMaps
 
-Browse online maps as if they were hand-drawn in the 16th century!
+Browse online maps as if they were hand-drawn in the 19th century!
 
 ![DeepMaps screenshot](screenshots/cyclegan-deepmaps.png)
 

@@ -99,12 +99,12 @@ function doStyleTransfer(details) {
     // Concat them using the Blob API.
     var blob = new Blob(buffers, { type: "image/png" });
     // Convert the buffers to an Image
-    blobUtil.blobToDataURL(blob).then(function(dataURL) {
+    blobUtil.blobToDataURL(blob).then(dataURL => {
       // Using p5 because the HTML Node argument seems to be buggy...
       // We also need to wait for the image to be successfully loaded.
-      var image = createImg(dataURL, function() {
+      var image = createImg(dataURL, () => {
         // Apply style-transfer to the image.
-        transferImage(image, function(styledImage) {
+        transferImage(image, styledImage => {
           if (!styledImage) {
             console.log("Didn't receive a styled image. aborting");
             filter.disconnect();
@@ -119,7 +119,7 @@ function doStyleTransfer(details) {
           styledImage = null;
           blobUtil
             .blobToArrayBuffer(styledBlob)
-            .then(function(arrayBuff) {
+            .then(arrayBuff => {
               // success
               filter.write(arrayBuff);
               filter.disconnect();
@@ -128,7 +128,7 @@ function doStyleTransfer(details) {
               filter = null;
               buffers = null;
             })
-            .catch(function(err) {
+            .catch(err => {
               // error
               filter.disconnect();
               console.error("Error while converting and writing the buffer:");
@@ -143,7 +143,28 @@ function doStyleTransfer(details) {
 }
 
 browser.webRequest.onBeforeRequest.addListener(
-  doStyleTransfer,
+  isGenerationLocalhost() ? replaceImage : doStyleTransfer,
   { urls: ["https://*.tile.openstreetmap.org/*"], types: ["image"] },
   ["blocking"]
 );
+
+var style = "oldmap01";
+function isGenerationLocalhost() {
+  return style === "localhost";
+}
+
+function restore_options() {
+  browser.storage.sync.get(
+    {
+      style: "oldmap01"
+    },
+    items => {
+      style = items.style;
+      console.log("Selected style:", style);
+      if (!isGenerationLocalhost()) {
+        loadStyleTransferModel(style);
+      }
+    }
+  );
+}
+restore_options();
