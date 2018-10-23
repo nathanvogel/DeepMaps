@@ -1,12 +1,13 @@
 {
   "description":
-    "Browse online maps as if they were hand-drawn in the 16th century!",
+    "Browse online maps as if they were hand-drawn in the 19th century!",
   "manifest_version": 2,
-  "name": "maps-replacer",
+  "name": "DeepMaps",
   "version": "1.1",
   "homepage_url": "https://github.com/nathanvogel/DeepMaps",
   "icons": {
-    "48": "maps.svg"
+    "48": "maps.svg",
+    "96": "maps.svg"
   },
 
   "permissions": [
@@ -42,7 +43,7 @@
   "applications": {
     "gecko": {
       "strict_min_version": "57.0a1",
-      "id": "addon@example.com"
+      "id": "deepmaps@nathanvogel.github.io"
     }
   }
 }

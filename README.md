@@ -6,21 +6,32 @@ Browse online maps as if they were hand-drawn in the 19th century!
 
 ![DeepMaps screenshot](screenshots/cyclegan-deepmaps.png)
 
-Or train a machine learning CycleGAN model on your own dataset and restyle OpenStreetMap to anything!
+Or train a CycleGAN or style-transfer machine learning model and restyle OpenStreetMap to anything!
+
+### Try it
+
+Just install [the Firefox extension](https://addons.mozilla.org/firefox/addon/deepmaps/)! You'll be able to try style-transfer models in the browser. For the better looking CycleGAN model, you'll need to setup machine learning tools on your computer.
 
 ### What is this?
 
-This is an interactive experience that allows you to browse OpenStreetMap rendered in an alternative style, on-demand by a neural network. The project is composed of 3 main parts:
+This is an interactive experience that allows you to browse OpenStreetMap rendered in an alternative style, on-demand by a neural network.
+
+The Firefox extension can work in two ways:
+
+1.  By generating images on-demand in the browser using style-transfer.
+2.  By querying a local server for replacement images.
+
+In the second case the project is composed of 3 main parts:
 
 - A PyTorch CycleGAN machine learning model
 - A local server that wraps around this model to convert given images and send the generated images back...
 - ...to a Firefox extension that injects the generated tiles in [openstreetmap.org](openstreetmap.org).
 
-#### Demo
+### Video demo
 
 Here : [https://twitter.com/genekogan/status/1048239707124125699](https://twitter.com/genekogan/status/1048239707124125699)
 
-## How to
+# How to
 
 ### Install
 
@@ -67,6 +78,11 @@ Only Firefox is supported, because Chrome doesn't allow to tamper with the conte
 
 Google Maps has a lot of protections, optimizations and features that make it harder to alter their rendered style, so I didn't insist on trying to make it work on their website.
 
-#### Is it possible to run it on the CPU, without NVidia, CUDA, etc.?
+#### Is it possible to run the server on the CPU, without NVidia, CUDA, etc.?
 
 Yes, but it will be even slower. Just pass `--gpu_ids -1` when running `servemaps.py`.
+
+## LICENSE
+
+This project is licensed under the terms of the MIT license.
+Copyright 2018 Nathan Vogel

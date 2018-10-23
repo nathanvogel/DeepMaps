@@ -4,7 +4,7 @@ body {
 
 select,
 button {
-  margin: 5px;
+  margin: 2px;
   /* font-size: 18px; */
 }
 
@@ -21,4 +21,8 @@ button {
 
 #localhost-info {
   display: none;
+}
+
+#openstreetmap {
+  margin-top: 35px;
 }
