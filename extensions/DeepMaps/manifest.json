@@ -20,8 +20,7 @@
     "https://raw.githubusercontent.com/*"
   ],
 
-  "content_security_policy":
-    "default-src 'self'; img-src 'self' data:; script-src 'self' 'unsafe-eval' ; object-src 'self'",
+  "content_security_policy": "default-src 'self'; img-src 'self' data:; script-src 'self' ; object-src 'self'",
 
   "background": {
     "scripts": [
