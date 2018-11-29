@@ -1,3 +1,5 @@
+/* globals transferImage loadStyleTransferModel */
+
 "use strict";
 
 // eslint-disable-next-line no-unused-vars
@@ -42,7 +44,7 @@ function replaceImage(details) {
   // aiUrl = "https://www.bing.com/sa/simg/hpc26.png";
 
   var didReceiveOriginalRequest = false;
-  filter.ondata = event => {
+  filter.ondata = _event => {
     // Indicate that we already received the original image.
     didReceiveOriginalRequest = true;
   };
@@ -52,7 +54,7 @@ function replaceImage(details) {
   // Ask for the result as an ArrayBuffer.
   xhr.responseType = "arraybuffer";
   // The the callback for our custom image.
-  xhr.onload = function(event) {
+  xhr.onload = function(_event) {
     var buffer = this.response;
 
     if (didReceiveOriginalRequest) {
@@ -63,7 +65,7 @@ function replaceImage(details) {
       filter.disconnect();
     } else {
       // The original request hasn't completed yet, so we replace the callback:
-      filter.ondata = event => {
+      filter.ondata = _event => {
         console.log("OSM request complete. We can now write our custom image.");
         filter.write(buffer);
         filter.disconnect();
@@ -86,7 +88,7 @@ function doStyleTransfer(details) {
   };
 
   // When all the pieces are here.
-  filter.onstop = event => {
+  filter.onstop = _event => {
     console.log("Received a new tile.");
     // Concat them using the Blob API.
     var blob = new Blob(buffers, { type: "image/png" });
