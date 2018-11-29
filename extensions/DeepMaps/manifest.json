@@ -1,6 +1,5 @@
 {
-  "description":
-    "Browse online maps as if they were hand-drawn in the 19th century!",
+  "description": "Browse online maps as if they were hand-drawn in the 19th century!",
   "manifest_version": 2,
   "name": "DeepMaps",
   "version": "1.1",
@@ -26,8 +25,6 @@
 
   "background": {
     "scripts": [
-      "libs/p5.min.js",
-      "libs/p5.dom.min.js",
       "libs/ml5.min.js",
       "libs/blob-util.min.js",
       "styleTransfer.js",

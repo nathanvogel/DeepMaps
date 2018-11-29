@@ -76,14 +76,6 @@ function replaceImage(details) {
   return {};
 }
 
-// p5.js setup()
-function setup() {
-  noCanvas();
-}
-
-// p5.js draw()
-function draw() {}
-
 function doStyleTransfer(details) {
   let filter = browser.webRequest.filterResponseData(details.requestId);
   let buffers = [];
@@ -100,9 +92,10 @@ function doStyleTransfer(details) {
     var blob = new Blob(buffers, { type: "image/png" });
     // Convert the buffers to an Image
     blobUtil.blobToDataURL(blob).then(dataURL => {
-      // Using p5 because the HTML Node argument seems to be buggy...
+      var image = document.createElement("img");
+      image.src = dataURL;
       // We also need to wait for the image to be successfully loaded.
-      var image = createImg(dataURL, () => {
+      image.onload = () => {
         // Apply style-transfer to the image.
         transferImage(image, styledImage => {
           if (!styledImage) {
@@ -135,7 +128,7 @@ function doStyleTransfer(details) {
               console.error(err);
             });
         });
-      });
+      };
     });
   };
 
