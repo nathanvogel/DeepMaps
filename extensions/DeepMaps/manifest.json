@@ -2,7 +2,7 @@
   "description": "Browse online maps as if they were hand-drawn in the 19th century!",
   "manifest_version": 2,
   "name": "DeepMaps",
-  "version": "1.1",
+  "version": "1.2",
   "homepage_url": "https://github.com/nathanvogel/DeepMaps",
   "icons": {
     "48": "maps.svg",
