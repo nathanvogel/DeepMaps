@@ -4,13 +4,17 @@
 
 Browse online maps as if they were hand-drawn in the 19th century!
 
-![DeepMaps screenshot](screenshots/cyclegan-deepmaps.png)
+[![DeepMaps on Vimeo](https://firebasestorage.googleapis.com/v0/b/general-file-hosting.appspot.com/o/ecal%2Fdeepmaps%2Fdeemaps-vimeo.png?alt=media&token=a3ff1b69-8a31-475e-af61-47ab6f347c14)](https://vimeo.com/299628717 "DeepMaps ECAL/Nathan Vogel - Click to Watch!")
 
 Or train a CycleGAN or style-transfer machine learning model and restyle OpenStreetMap to anything!
 
 ### Try it
 
 Just install [the Firefox extension](https://addons.mozilla.org/firefox/addon/deepmaps/)! You'll be able to try style-transfer models in the browser. For the better looking CycleGAN model, you'll need to setup machine learning tools on your computer.
+
+### Video of the demo
+
+Here: [https://twitter.com/genekogan/status/1048239707124125699](https://twitter.com/genekogan/status/1048239707124125699)
 
 ### What is this?
 
@@ -26,10 +30,6 @@ In the second case the project is composed of 3 main parts:
 - A PyTorch CycleGAN machine learning model
 - A local server that wraps around this model to convert given images and send the generated images back...
 - ...to a Firefox extension that injects the generated tiles in [openstreetmap.org](openstreetmap.org).
-
-### Video demo
-
-Here : [https://twitter.com/genekogan/status/1048239707124125699](https://twitter.com/genekogan/status/1048239707124125699)
 
 # How to
 
