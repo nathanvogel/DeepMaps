@@ -11,7 +11,10 @@
   "extends": ["eslint:recommended"],
   "rules": {
     "no-console": 0,
-    "no-unused-vars": ["warn", { "vars": "all", "args": "all" }],
+    "no-unused-vars": [
+      "warn",
+      { "vars": "all", "args": "after-used", "argsIgnorePattern": "^_" }
+    ],
     "no-undef": ["warn"],
     "no-proto": ["error"],
     "prefer-arrow-callback": ["warn"],

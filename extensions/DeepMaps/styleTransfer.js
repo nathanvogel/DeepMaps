@@ -1,3 +1,5 @@
+/* exported loadStyleTransferModel transferImage */
+
 "use strict";
 
 var styler;

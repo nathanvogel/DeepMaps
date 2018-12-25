@@ -1,3 +1,5 @@
+/* globals transferImage loadStyleTransferModel */
+
 "use strict";
 
 // eslint-disable-next-line no-unused-vars
@@ -42,7 +44,7 @@ function replaceImage(details) {
   // aiUrl = "https://www.bing.com/sa/simg/hpc26.png";
 
   var didReceiveOriginalRequest = false;
-  filter.ondata = event => {
+  filter.ondata = _event => {
     // Indicate that we already received the original image.
     didReceiveOriginalRequest = true;
   };
@@ -52,7 +54,7 @@ function replaceImage(details) {
   // Ask for the result as an ArrayBuffer.
   xhr.responseType = "arraybuffer";
   // The the callback for our custom image.
-  xhr.onload = function(event) {
+  xhr.onload = function(_event) {
     var buffer = this.response;
 
     if (didReceiveOriginalRequest) {
@@ -63,7 +65,7 @@ function replaceImage(details) {
       filter.disconnect();
     } else {
       // The original request hasn't completed yet, so we replace the callback:
-      filter.ondata = event => {
+      filter.ondata = _event => {
         console.log("OSM request complete. We can now write our custom image.");
         filter.write(buffer);
         filter.disconnect();
@@ -76,14 +78,6 @@ function replaceImage(details) {
   return {};
 }
 
-// p5.js setup()
-function setup() {
-  noCanvas();
-}
-
-// p5.js draw()
-function draw() {}
-
 function doStyleTransfer(details) {
   let filter = browser.webRequest.filterResponseData(details.requestId);
   let buffers = [];
@@ -94,15 +88,16 @@ function doStyleTransfer(details) {
   };
 
   // When all the pieces are here.
-  filter.onstop = event => {
+  filter.onstop = _event => {
     console.log("Received a new tile.");
     // Concat them using the Blob API.
     var blob = new Blob(buffers, { type: "image/png" });
     // Convert the buffers to an Image
     blobUtil.blobToDataURL(blob).then(dataURL => {
-      // Using p5 because the HTML Node argument seems to be buggy...
+      var image = document.createElement("img");
+      image.src = dataURL;
       // We also need to wait for the image to be successfully loaded.
-      var image = createImg(dataURL, () => {
+      image.onload = () => {
         // Apply style-transfer to the image.
         transferImage(image, styledImage => {
           if (!styledImage) {
@@ -135,7 +130,7 @@ function doStyleTransfer(details) {
               console.error(err);
             });
         });
-      });
+      };
     });
   };
 

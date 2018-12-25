@@ -86,3 +86,5 @@ Yes, but it will be even slower. Just pass `--gpu_ids -1` when running `servemap
 
 This project is licensed under the terms of the MIT license.
 Copyright 2018 Nathan Vogel
+
+This project was initiated during a workshop led by Gene Kogan at ECAL.
