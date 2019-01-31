@@ -23,6 +23,7 @@
   "globals": {
     "ml5": true,
     "createImg": true,
+    "Jimp": true,
     "blobUtil": true
   }
 }

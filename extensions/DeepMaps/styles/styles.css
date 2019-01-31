@@ -19,7 +19,8 @@ button {
   text-align: center;
 }
 
-#localhost-info {
+#localhost-info,
+#runway-info {
   display: none;
 }
 

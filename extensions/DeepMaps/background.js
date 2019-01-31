@@ -1,7 +1,11 @@
-/* globals transferImage loadStyleTransferModel */
+/* globals transferImage loadStyleTransferModel queryRunway */
 
 "use strict";
 
+/*
+ * This is just a default web extension example of replacing text
+ * inside an HTTP request.
+ */
 // eslint-disable-next-line no-unused-vars
 function listener(details) {
   let filter = browser.webRequest.filterResponseData(details.requestId);
@@ -78,6 +82,75 @@ function replaceImage(details) {
   return {};
 }
 
+function replaceWithRunway(details) {
+  let filter = browser.webRequest.filterResponseData(details.requestId);
+  let buffers = [];
+
+  // Gather all the buffers coming in. The image might arrive in several pieces.
+  filter.ondata = event => {
+    buffers.push(event.data);
+  };
+
+  // When all the pieces are here.
+  filter.onstop = _event => {
+    console.log("Received a new tile from OSM.");
+    // Concat them using the Blob API.
+    var blob = new Blob(buffers, { type: "image/png" });
+    // Convert the buffers to an Image
+    // blobUtil
+    //   .blobToDataURL(blob)
+    //   .then(base64String => {
+    //     return queryRunway(base64String);
+    //   })
+    blobUtil
+      .blobToArrayBuffer(blob)
+      .then(arrayBuff => {
+        return queryRunway(arrayBuff);
+      })
+      // queryRunway(buffers)
+      .then(dataUrl => {
+        // filter.write(dataUrl);
+        // return 0;
+        return onStyledImage(dataUrl, filter);
+      })
+      .catch(error => {
+        // Catch any error and log them
+        console.error("Couldn't query Runway:", error);
+        // Return something so that the error is "handled" and the then()
+        // handler can be called and clean up.
+        return 0;
+      })
+      .then(() => {
+        filter.disconnect();
+        filter.ondata = null;
+        filter.onstop = null;
+        filter = null;
+        buffers = null;
+      });
+  };
+
+  return {};
+}
+
+function onStyledImage(styledImageDataUrl, filter) {
+  if (!styledImageDataUrl) {
+    throw "Didn't receive a styled image. aborting";
+  }
+  console.log("Image restyled.");
+
+  // Convert the result back to an ArrayBuffer.
+  var styledBlob = blobUtil.dataURLToBlob(styledImageDataUrl);
+  return blobUtil
+    .blobToArrayBuffer(styledBlob)
+    .then(arrayBuff => {
+      filter.write(arrayBuff);
+    })
+    .catch(err => {
+      console.error("Error while converting and writing the buffer:");
+      throw err;
+    });
+}
+
 function doStyleTransfer(details) {
   let filter = browser.webRequest.filterResponseData(details.requestId);
   let buffers = [];
@@ -99,37 +172,27 @@ function doStyleTransfer(details) {
       // We also need to wait for the image to be successfully loaded.
       image.onload = () => {
         // Apply style-transfer to the image.
-        transferImage(image, styledImage => {
-          if (!styledImage) {
-            console.log("Didn't receive a styled image. aborting");
+        transferImage(image)
+          .then(styledImage => {
+            return onStyledImage(styledImage ? styledImage.src : null, filter);
+          })
+          .catch(error => {
+            // Catch any error and log them
+            console.error("Couldn't apply style-transfer:", error);
+            // Return something so that the error is "handled" and the then()
+            // handler can be called and clean up.
+            return 0;
+          })
+          .then(() => {
             filter.disconnect();
-            return;
-          }
-          console.log("Image restyled.");
-          image.remove();
-          image = null;
-
-          // Convert the result back to an ArrayBuffer.
-          var styledBlob = blobUtil.dataURLToBlob(styledImage.src);
-          styledImage = null;
-          blobUtil
-            .blobToArrayBuffer(styledBlob)
-            .then(arrayBuff => {
-              // success
-              filter.write(arrayBuff);
-              filter.disconnect();
-              filter.ondata = null;
-              filter.onstop = null;
-              filter = null;
-              buffers = null;
-            })
-            .catch(err => {
-              // error
-              filter.disconnect();
-              console.error("Error while converting and writing the buffer:");
-              console.error(err);
-            });
-        });
+            filter.ondata = null;
+            filter.onstop = null;
+            filter = null;
+            buffers = null;
+            // Some browser style-transfer specific clean-up.
+            image.remove();
+            image = null;
+          });
       };
     });
   };
@@ -137,15 +200,29 @@ function doStyleTransfer(details) {
   return {};
 }
 
-browser.webRequest.onBeforeRequest.addListener(
-  isGenerationLocalhost() ? replaceImage : doStyleTransfer,
-  { urls: ["https://*.tile.openstreetmap.org/*"], types: ["image"] },
-  ["blocking"]
-);
+function startListeningTiles() {
+  browser.webRequest.onBeforeRequest.addListener(
+    getReplaceFunction(),
+    { urls: ["https://*.tile.openstreetmap.org/*"], types: ["image"] },
+    ["blocking"]
+  );
+}
 
 var style = "oldmap01";
-function isGenerationLocalhost() {
-  return style === "localhost";
+
+function isStyleTransfer() {
+  return style !== "localhost" && style !== "runway";
+}
+
+function getReplaceFunction() {
+  switch (style) {
+    case "localhost":
+      return replaceImage;
+    case "runway":
+      return replaceWithRunway;
+    default:
+      return doStyleTransfer;
+  }
 }
 
 function restore_options() {
@@ -156,9 +233,10 @@ function restore_options() {
     items => {
       style = items.style;
       console.log("Selected style:", style);
-      if (!isGenerationLocalhost()) {
+      if (isStyleTransfer()) {
         loadStyleTransferModel(style);
       }
+      startListeningTiles();
     }
   );
 }

@@ -23,6 +23,9 @@ function restore_options() {
       if (items.style === "localhost") {
         document.getElementById("localhost-info").style.display = "block";
       }
+      if (items.style === "runway") {
+        document.getElementById("runway-info").style.display = "block";
+      }
     }
   );
 }

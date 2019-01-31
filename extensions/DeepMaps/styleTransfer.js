@@ -19,28 +19,33 @@ function modelLoaded() {
 }
 
 // Apply the transfer to both images!
-function transferImage(inputImg, onImageStyled) {
-  if (!styler) {
-    console.warn("Styler not loaded yet.");
-    return;
-  }
-  if (!styler.ready) {
-    console.warn("Styler not ready yet.");
-    return;
-  }
-
-  // console.log("Applying Style Transfer on this inputImg:");
-  // console.log(inputImg);
-
-  styler.transfer(inputImg, (err, result) => {
-    if (err) {
-      console.error("Failed to apply the style transfer.");
-      console.log(err);
-      return null;
+function transferImage(inputImg) {
+  return new Promise((resolve, reject) => {
+    if (!styler) {
+      console.warn("Styler not loaded yet.");
+      reject("Styler not loaded yet.");
+      return;
     }
-    // console.log("Style transfer finished. Result = ");
-    // console.log(result);
-    onImageStyled(result);
-    result = null;
+    if (!styler.ready) {
+      console.warn("Styler not ready yet.");
+      reject("Styler not ready yet.");
+      return;
+    }
+
+    // console.log("Applying Style Transfer on this inputImg:");
+    // console.log(inputImg);
+
+    styler.transfer(inputImg, (err, result) => {
+      if (err) {
+        console.error("Failed to apply the style transfer.");
+        console.log(err);
+        reject(err);
+        return null;
+      }
+      // console.log("Style transfer finished. Result = ");
+      // console.log(result);
+      resolve(result);
+      result = null;
+    });
   });
 }
