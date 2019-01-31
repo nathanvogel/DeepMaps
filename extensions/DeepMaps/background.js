@@ -25,6 +25,7 @@ function listener(details) {
   return {};
 }
 
+// My local server default address
 var endpoint = "http://localhost:8080/tmp.png";
 function formatURLParams(params) {
   return (
@@ -37,7 +38,7 @@ function formatURLParams(params) {
   );
 }
 
-function replaceImage(details) {
+function replaceImageWithCustomServer(details) {
   let filter = browser.webRequest.filterResponseData(details.requestId);
   // console.log(details.url);
   // console.log(endpoint + formatURLParams([details.url]));
@@ -82,7 +83,7 @@ function replaceImage(details) {
   return {};
 }
 
-function replaceWithRunway(details) {
+function replaceTile(details) {
   let filter = browser.webRequest.filterResponseData(details.requestId);
   let buffers = [];
 
@@ -91,31 +92,39 @@ function replaceWithRunway(details) {
     buffers.push(event.data);
   };
 
-  // When all the pieces are here.
   filter.onstop = _event => {
+    // When all the pieces are here.
     console.log("Received a new tile from OSM.");
     // Concat them using the Blob API.
     var blob = new Blob(buffers, { type: "image/png" });
-    // Convert the buffers to an Image
-    // blobUtil
-    //   .blobToDataURL(blob)
-    //   .then(base64String => {
-    //     return queryRunway(base64String);
-    //   })
-    blobUtil
-      .blobToArrayBuffer(blob)
-      .then(arrayBuff => {
-        return queryRunway(arrayBuff);
-      })
-      // queryRunway(buffers)
+
+    var promise;
+    switch (style) {
+      case "runway-ast":
+        promise = queryRunway(blob);
+        break;
+      default:
+        promise = transferImage(blob);
+        break;
+    }
+
+    promise
+      // Check errors in dataUrl
       .then(dataUrl => {
-        // filter.write(dataUrl);
-        // return 0;
-        return onStyledImage(dataUrl, filter);
+        if (!dataUrl) throw "Didn't receive a styled image. aborting";
+        console.log("Image restyled.");
+        return dataUrl;
+      })
+      // Convert data url to an ArrayBuffer writable to our StreamFilter
+      .then(blobUtil.dataURLToBlob)
+      .then(blobUtil.blobToArrayBuffer)
+      // Write the restyled and converted image to the request.
+      .then(arrayBuff => {
+        filter.write(arrayBuff);
       })
       .catch(error => {
         // Catch any error and log them
-        console.error("Couldn't query Runway:", error);
+        console.error("Couldn't restyle the image:", error);
         // Return something so that the error is "handled" and the then()
         // handler can be called and clean up.
         return 0;
@@ -132,72 +141,25 @@ function replaceWithRunway(details) {
   return {};
 }
 
-function onStyledImage(styledImageDataUrl, filter) {
-  if (!styledImageDataUrl) {
-    throw "Didn't receive a styled image. aborting";
-  }
-  console.log("Image restyled.");
+var style = "oldmap01";
 
-  // Convert the result back to an ArrayBuffer.
-  var styledBlob = blobUtil.dataURLToBlob(styledImageDataUrl);
-  return blobUtil
-    .blobToArrayBuffer(styledBlob)
-    .then(arrayBuff => {
-      filter.write(arrayBuff);
-    })
-    .catch(err => {
-      console.error("Error while converting and writing the buffer:");
-      throw err;
-    });
+function isStyleTransfer() {
+  switch (style) {
+    case "localhost":
+    case "runway-ast":
+      return false;
+    default:
+      return true;
+  }
 }
 
-function doStyleTransfer(details) {
-  let filter = browser.webRequest.filterResponseData(details.requestId);
-  let buffers = [];
-
-  // Gather all the buffers coming in. The image might arrive in several pieces.
-  filter.ondata = event => {
-    buffers.push(event.data);
-  };
-
-  // When all the pieces are here.
-  filter.onstop = _event => {
-    console.log("Received a new tile.");
-    // Concat them using the Blob API.
-    var blob = new Blob(buffers, { type: "image/png" });
-    // Convert the buffers to an Image
-    blobUtil.blobToDataURL(blob).then(dataURL => {
-      var image = document.createElement("img");
-      image.src = dataURL;
-      // We also need to wait for the image to be successfully loaded.
-      image.onload = () => {
-        // Apply style-transfer to the image.
-        transferImage(image)
-          .then(styledImage => {
-            return onStyledImage(styledImage ? styledImage.src : null, filter);
-          })
-          .catch(error => {
-            // Catch any error and log them
-            console.error("Couldn't apply style-transfer:", error);
-            // Return something so that the error is "handled" and the then()
-            // handler can be called and clean up.
-            return 0;
-          })
-          .then(() => {
-            filter.disconnect();
-            filter.ondata = null;
-            filter.onstop = null;
-            filter = null;
-            buffers = null;
-            // Some browser style-transfer specific clean-up.
-            image.remove();
-            image = null;
-          });
-      };
-    });
-  };
-
-  return {};
+function getReplaceFunction() {
+  switch (style) {
+    case "localhost":
+      return replaceImageWithCustomServer;
+    default:
+      return replaceTile;
+  }
 }
 
 function startListeningTiles() {
@@ -206,23 +168,6 @@ function startListeningTiles() {
     { urls: ["https://*.tile.openstreetmap.org/*"], types: ["image"] },
     ["blocking"]
   );
-}
-
-var style = "oldmap01";
-
-function isStyleTransfer() {
-  return style !== "localhost" && style !== "runway";
-}
-
-function getReplaceFunction() {
-  switch (style) {
-    case "localhost":
-      return replaceImage;
-    case "runway":
-      return replaceWithRunway;
-    default:
-      return doStyleTransfer;
-  }
 }
 
 function restore_options() {
@@ -240,4 +185,5 @@ function restore_options() {
     }
   );
 }
+
 restore_options();

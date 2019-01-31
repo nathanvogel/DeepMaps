@@ -2,7 +2,7 @@
 
 "use strict";
 
-function queryRunway(arrayBuffer) {
+function queryRunway(blob) {
   return new Promise((resolve, reject) => {
     var xhr = new XMLHttpRequest();
 
@@ -23,16 +23,25 @@ function queryRunway(arrayBuffer) {
       });
     };
 
-    return Jimp.read(arrayBuffer).then(image => {
-      image.getBase64(Jimp.MIME_JPEG, (error, jpegDataUrl) => {
-        if (error) throw error;
-        xhr.send(
-          JSON.stringify({
-            contentImage: jpegDataUrl
-          })
-        );
-      });
-    });
+    return (
+      blobUtil
+        // Convert the Blob to something Jimp understands.
+        .blobToArrayBuffer(blob)
+        // Load to Jimp for PNG>JPEG conversion.
+        .then(arrayBuffer => Jimp.read(arrayBuffer))
+        .then(jimpImage => {
+          // Convert PNG to JPEG because Runway with HTTP only supports JPEG.
+          jimpImage.getBase64(Jimp.MIME_JPEG, (error, jpegDataUrl) => {
+            if (error) throw error;
+            // Send the image translation request to Runway.
+            xhr.send(
+              JSON.stringify({
+                contentImage: jpegDataUrl
+              })
+            );
+          });
+        })
+    );
   });
 }
 

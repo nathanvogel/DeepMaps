@@ -10,7 +10,6 @@ function loadStyleTransferModel(styleName) {
   styler = ml5.styleTransfer("models/" + styleName, modelLoaded);
 }
 
-// A function to be called when the models have loaded
 function modelLoaded() {
   // Check if both models are loaded
   if (styler.ready) {
@@ -18,8 +17,7 @@ function modelLoaded() {
   }
 }
 
-// Apply the transfer to both images!
-function transferImage(inputImg) {
+function transferImage(blob) {
   return new Promise((resolve, reject) => {
     if (!styler) {
       console.warn("Styler not loaded yet.");
@@ -32,20 +30,28 @@ function transferImage(inputImg) {
       return;
     }
 
-    // console.log("Applying Style Transfer on this inputImg:");
-    // console.log(inputImg);
+    return blobUtil.blobToDataURL(blob).then(dataURL => {
+      var image = document.createElement("img");
+      image.src = dataURL;
+      image.onload = () => {
+        // We also need to wait for the image to be successfully loaded.
+        styler.transfer(image, (err, result) => {
+          // Clean the image
+          image.remove();
+          image = null;
 
-    styler.transfer(inputImg, (err, result) => {
-      if (err) {
-        console.error("Failed to apply the style transfer.");
-        console.log(err);
-        reject(err);
-        return null;
-      }
-      // console.log("Style transfer finished. Result = ");
-      // console.log(result);
-      resolve(result);
-      result = null;
+          // Check style-transfer errors.
+          if (err) {
+            console.error("Failed to apply the style transfer.");
+            console.log(err);
+            reject(err);
+            return null;
+          }
+
+          // Send the image back to background.js
+          resolve(result ? result.src : result);
+        });
+      };
     });
   });
 }
