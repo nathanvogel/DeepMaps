@@ -27,6 +27,7 @@
       "libs/ml5.min.js",
       "libs/blob-util.min.js",
       "libs/jimp.min.js",
+      "defaults.js",
       "styleTransfer.js",
       "queryRunway.js",
       "background.js"

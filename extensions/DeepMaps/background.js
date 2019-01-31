@@ -141,7 +141,7 @@ function replaceTile(details) {
   return {};
 }
 
-var style = "oldmap01";
+var style = DEFAULTS.STYLE;
 
 function isStyleTransfer() {
   switch (style) {
@@ -173,7 +173,7 @@ function startListeningTiles() {
 function restore_options() {
   browser.storage.sync.get(
     {
-      style: "oldmap01"
+      style: DEFAULTS.STYLE
     },
     items => {
       style = items.style;

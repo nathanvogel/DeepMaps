@@ -2,12 +2,24 @@
 
 "use strict";
 
+var runwayASTUrl = DEFAULTS.RUNWAY_AST_URL;
+function restore_runway_options() {
+  browser.storage.sync.get(
+    {
+      runwayASTUrl: DEFAULTS.RUNWAY_AST_URL
+    },
+    items => {
+      runwayASTUrl = items.runwayASTUrl;
+      console.log("Runway URL:", runwayASTUrl);
+    }
+  );
+}
+
 function queryRunway(blob) {
   return new Promise((resolve, reject) => {
     var xhr = new XMLHttpRequest();
 
-    let url = "http://localhost:8000/query";
-    xhr.open("POST", url, true);
+    xhr.open("POST", runwayASTUrl, true);
     xhr.setRequestHeader("Content-Type", "application/json");
     xhr.responseType = "json";
     // The the callback for our custom image.
@@ -74,3 +86,5 @@ function queryRunway(blob) {
 //       );
 //   });
 // }
+
+restore_runway_options();

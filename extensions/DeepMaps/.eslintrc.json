@@ -24,6 +24,7 @@
     "ml5": true,
     "createImg": true,
     "Jimp": true,
+    "DEFAULTS": true,
     "blobUtil": true
   }
 }

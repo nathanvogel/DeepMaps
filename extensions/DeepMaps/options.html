@@ -8,10 +8,10 @@
   <body>
     <p>Selected style:</p>
     <select id="style">
-      <option value="oldmap01">Ancient map</option>
-      <option value="udnie">Francis Picabia - Udnie</option>
-      <option value="localhost">Local server (DeepMaps)</option>
-      <option value="runway-ast">Runway ML - Adaptive Style Transfer</option>
+      <option value="oldmap01">Ancient maps (Neural style)</option>
+      <option value="udnie">Francis Picabia - Udnie (Neural style)</option>
+      <option value="localhost">DeepMaps local server (CycleGAN)</option>
+      <option value="runway-ast">Runway ML (Adaptive Style Transfer)</option>
     </select>
 
     <p id="localhost-info">
@@ -24,12 +24,16 @@
       >
       for a CycleGAN-powered Python server example.
     </p>
-    <p id="runway-info">
-      You'll need to get a <a href="https://runwayapp.ai/">Runway</a> model
-      running as a local HTTP server.
-    </p>
+    <div id="runway-info">
+      <p>
+        You'll need to get a <a href="https://runwayapp.ai/">Runway</a> model
+        running as a local HTTP server. Tested version: Beta 0.2.1
+      </p>
+      Runway /query url: &nbsp;&nbsp;&nbsp;&nbsp;
+      <input id="runwayASTUrl" type="url" /> &nbsp;&nbsp;&nbsp;&nbsp;
+      <button id="save">Save</button>
+    </div>
     <br />
-    <button id="save">Save</button>
 
     <p id="openstreetmap">
       Open <a href="https://www.openstreetmap.org">OpenStreetMap.org</a> to see
@@ -37,6 +41,7 @@
     </p>
     <br />
 
+    <script src="defaults.js"></script>
     <script src="options.js"></script>
   </body>
 </html>
